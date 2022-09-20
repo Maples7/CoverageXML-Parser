@@ -15,8 +15,34 @@
     "type": "git",
     "url": "https://github.com/Maples7/CoverageXML-Parser"
   },
-  "activationEvents": [],
-  "contributes": {},
+  "activationEvents": [
+    "onView:coverageXMLParser"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "coverageXMLParser.addFile",
+        "title": "Add CoverageXML file",
+        "icon": "$(add)"
+      }
+    ],
+    "views": {
+      "explorer": [
+        {
+          "id": "coverageXMLParser",
+          "name": "Coverage XML Parser",
+          "icon": "$(symbol-class)"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "coverageXMLParser",
+        "contents": "Add a CoverageXML file to the workspace to view the results.\n[Add CoverageXML File](command:coverageXMLParser.addFile)",
+        "when": "view == coverageXMLParser && viewItem == null"
+      }
+    ]
+  },
   "main": "./out/extension.js",
   "scripts": {
     "vscode:prepublish": "npm run compile",
@@ -24,7 +50,7 @@
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src --ext ts",
-    "pretty": "eslint --fix --ext .ts",
+    "pretty": "eslint src --ext ts --fix",
     "test": "node ./out/test/runTest.js",
     "prepare": "husky install"
   },
