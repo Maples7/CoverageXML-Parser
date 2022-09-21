@@ -11,19 +11,21 @@ export default class parse extends Command {
   private sourceFiles: Record<string, string> = {} as Record<string, string>
 
   async run(): Promise<void> {
+
     const {args} = await this.parse(parse)
+    const path: string = 'C:/Users/ruiyli/Downloads/netfxTest.coveragexml'
 
-    this.log(`hello ${args.xmlpath}`)
+    // First reading round, for source file index only.
+    this.log('Going to parse source file index...')
 
-    const reader = XmlReader.create({stream: true});
-    const fileStream = fs.createReadStream('C:/Users/ruiyli/Downloads/netfxTest2.xml')
+    const indexReader = XmlReader.create({stream: true});
 
-    const rl = readline.createInterface({
-      input: fileStream,
+    const indexLines = readline.createInterface({
+      input: fs.createReadStream(path),
       crlfDelay: Infinity
     });
 
-    reader.on('tag:SourceFileNames', (data:any) => {
+    indexReader.on('tag:SourceFileNames', (data:any) => {
 
       const sourceFileID = data.children.find((tag:any) => tag.name === 'SourceFileID').children[0].value
       const sourceFileName = data.children.find((tag:any) => tag.name === 'SourceFileName').children[0].value
@@ -32,8 +34,29 @@ export default class parse extends Command {
       this.sourceFiles[data.SourceFileID] = data.SourceFileName
     });
 
-    for await (const line of rl) {
-      reader.parse(line)
+    for await (const line of indexLines) {
+      indexReader.parse(line)
+    }
+
+    // Second reading round, for real coverage content.
+    this.log('Going to parse coverage content...')
+
+    const contentReader = XmlReader.create({stream: true});
+
+    const contentLines = readline.createInterface({
+      input: fs.createReadStream(path),
+      crlfDelay: Infinity
+    });
+
+    contentReader.on('tag:Module', (data:any) => {
+
+      const moduleName = data.children.find((tag:any) => tag.name === 'ModuleName').children[0].value
+
+      console.log(`ModuleName = ${moduleName}`)
+    });
+
+    for await (const line of contentLines) {
+      contentReader.parse(line)
     }
   }
 }
