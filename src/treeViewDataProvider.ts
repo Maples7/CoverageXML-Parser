@@ -5,6 +5,10 @@ export class TreeViewDataProvider implements vscode.TreeDataProvider<Dependency>
 {
   constructor(private xmlFilePath?: string) {}
 
+  addFile(filePath: string) {
+    this.xmlFilePath = filePath;
+  }
+
   getTreeItem(element: Dependency): vscode.TreeItem {
     return element;
   }
@@ -21,13 +25,13 @@ export class TreeViewDataProvider implements vscode.TreeDataProvider<Dependency>
         new Dependency(
           'child1',
           '/Users/maples7/CoverageXML-Parser/src/treeViewDataProvider.ts',
-          vscode.TreeItemCollapsibleState.None
+          vscode.TreeItemCollapsibleState.Expanded
         ),
         new Dependency(
           'child2',
           '/Users/maples7/CoverageXML-Parser/src/treeViewDataProvider.ts',
-          vscode.TreeItemCollapsibleState.None
-        )
+          vscode.TreeItemCollapsibleState.Expanded
+        ),
       ]);
     } else {
       return Promise.resolve([
@@ -53,4 +57,3 @@ class Dependency extends vscode.TreeItem {
     this.description = filePath;
   }
 }
-
