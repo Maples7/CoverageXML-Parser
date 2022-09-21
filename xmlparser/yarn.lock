@@ -2180,6 +2180,11 @@
   "resolved" "https://registry.npmjs.org/esutils/-/esutils-2.0.3.tgz"
   "version" "2.0.3"
 
+"eventemitter3@^2.0.0":
+  "integrity" "sha512-jLN68Dx5kyFHaePoXWPsCGW5qdyZQtLYHkxkg02/Mz6g0kYpDx4FyP6XfArhQdlOC4b8Mv+EMxPo/8La7Tzghg=="
+  "resolved" "https://registry.npmjs.org/eventemitter3/-/eventemitter3-2.0.3.tgz"
+  "version" "2.0.3"
+
 "eventemitter3@^4.0.4":
   "integrity" "sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw=="
   "resolved" "https://registry.npmjs.org/eventemitter3/-/eventemitter3-4.0.7.tgz"
@@ -5384,6 +5389,21 @@
     "make-dir" "^3.0.0"
     "sort-keys" "^4.0.0"
     "write-file-atomic" "^3.0.0"
+
+"xml-lexer@^0.2.2":
+  "integrity" "sha512-G0i98epIwiUEiKmMcavmVdhtymW+pCAohMRgybyIME9ygfVu8QheIi+YoQh3ngiThsT0SQzJT4R0sKDEv8Ou0w=="
+  "resolved" "https://registry.npmjs.org/xml-lexer/-/xml-lexer-0.2.2.tgz"
+  "version" "0.2.2"
+  dependencies:
+    "eventemitter3" "^2.0.0"
+
+"xml-reader@^2.4.3":
+  "integrity" "sha512-xWldrIxjeAMAu6+HSf9t50ot1uL5M+BtOidRCWHXIeewvSeIpscWCsp4Zxjk8kHHhdqFBrfK8U0EJeCcnyQ/gA=="
+  "resolved" "https://registry.npmjs.org/xml-reader/-/xml-reader-2.4.3.tgz"
+  "version" "2.4.3"
+  dependencies:
+    "eventemitter3" "^2.0.0"
+    "xml-lexer" "^0.2.2"
 
 "xml2js@0.4.19":
   "integrity" "sha512-esZnJZJOiJR9wWKMyuvSE1y6Dq5LCuJanqhxslH2bxM6duahNZ+HMpCLhBQGZkbX6xRf8x1Y2eJlgt2q3qo49Q=="
