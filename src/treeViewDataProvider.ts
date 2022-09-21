@@ -3,9 +3,9 @@ import * as vscode from 'vscode';
 
 export class TreeViewDataProvider implements vscode.TreeDataProvider<Dependency>
 {
-  constructor(private xmlFilePath?: string) {}
+  constructor(private xmlFilePath?: vscode.Uri) {}
 
-  addFile(filePath: string) {
+  addFile(filePath: vscode.Uri) {
     this.xmlFilePath = filePath;
   }
 
@@ -15,7 +15,7 @@ export class TreeViewDataProvider implements vscode.TreeDataProvider<Dependency>
 
   getChildren(element?: Dependency): Thenable<Dependency[]> {
     if (!this.xmlFilePath) {
-      vscode.window.showInformationMessage('No coverage XML file loaded.');
+      vscode.window.showInformationMessage('No CovergaXML file loaded.');
       return Promise.resolve([]);
     }
 
