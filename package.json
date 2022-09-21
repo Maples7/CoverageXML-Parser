@@ -26,20 +26,27 @@
         "icon": "$(add)"
       }
     ],
-    "views": {
-      "explorer": [
+    "viewsContainers": {
+      "activitybar": [
         {
           "id": "coverageXMLParser",
-          "name": "Coverage XML Parser",
-          "icon": "$(symbol-class)"
+          "title": "CoverageXML Parser",
+          "icon": "$(symbol-keyword)"
+        }
+      ]
+    },
+    "views": {
+      "coverageXMLParser": [
+        {
+          "id": "coverageXMLParser",
+          "name": "CoverageXML Parser"
         }
       ]
     },
     "viewsWelcome": [
       {
         "view": "coverageXMLParser",
-        "contents": "Add a CoverageXML file to the workspace to view the results.\n[Add CoverageXML File](command:coverageXMLParser.addFile)",
-        "when": "view == coverageXMLParser && viewItem == null"
+        "contents": "Add a CoverageXML file to the workspace to view the results.\n[Add CoverageXML File](command:coverageXMLParser.addFile)"
       }
     ]
   },

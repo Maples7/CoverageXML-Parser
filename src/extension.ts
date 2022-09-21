@@ -5,7 +5,7 @@ import { TreeViewDataProvider } from './treeViewDataProvider';
 export function activate(context: vscode.ExtensionContext) {
   let disposable = vscode.window.registerTreeDataProvider(
     'coverageXMLParser',
-    new TreeViewDataProvider('TODO.coveragexml')
+    new TreeViewDataProvider()
   );
 
   context.subscriptions.push(disposable);

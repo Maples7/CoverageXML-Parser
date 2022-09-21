@@ -3,7 +3,7 @@ import * as vscode from 'vscode';
 
 export class TreeViewDataProvider implements vscode.TreeDataProvider<Dependency>
 {
-  constructor(private xmlFilePath: string) {}
+  constructor(private xmlFilePath?: string) {}
 
   getTreeItem(element: Dependency): vscode.TreeItem {
     return element;
@@ -18,10 +18,25 @@ export class TreeViewDataProvider implements vscode.TreeDataProvider<Dependency>
     if (element) {
       return Promise.resolve([
         // TODO: return children of element
+        new Dependency(
+          'child1',
+          '/Users/maples7/CoverageXML-Parser/src/treeViewDataProvider.ts',
+          vscode.TreeItemCollapsibleState.None
+        ),
+        new Dependency(
+          'child2',
+          '/Users/maples7/CoverageXML-Parser/src/treeViewDataProvider.ts',
+          vscode.TreeItemCollapsibleState.None
+        )
       ]);
     } else {
       return Promise.resolve([
         // TODO: return root element
+        new Dependency(
+          'root',
+          '/Users/maples7/CoverageXML-Parser/src/treeViewDataProvider.ts',
+          vscode.TreeItemCollapsibleState.Expanded
+        ),
       ]);
     }
   }
