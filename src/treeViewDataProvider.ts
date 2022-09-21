@@ -1,12 +1,19 @@
+import * as _ from 'lodash';
 import * as path from 'path';
 import * as vscode from 'vscode';
 
-export class TreeViewDataProvider implements vscode.TreeDataProvider<Dependency>
-{
+import { Console } from 'console';
+
+export class TreeViewDataProvider implements vscode.TreeDataProvider<Dependency> {
   constructor(private xmlFilePath?: vscode.Uri) {}
 
   addFile(filePath: vscode.Uri) {
     this.xmlFilePath = filePath;
+  }
+
+  hashasCoverageXMLFiles(): boolean {
+    // TODO: call parser's API to scan temporary folder
+    return !_.isUndefined(this.xmlFilePath);
   }
 
   getTreeItem(element: Dependency): vscode.TreeItem {
@@ -14,10 +21,11 @@ export class TreeViewDataProvider implements vscode.TreeDataProvider<Dependency>
   }
 
   getChildren(element?: Dependency): Thenable<Dependency[]> {
-    if (!this.xmlFilePath) {
-      vscode.window.showInformationMessage('No CovergaXML file loaded.');
+    if (!this.hashasCoverageXMLFiles()) {
       return Promise.resolve([]);
     }
+
+    console.debug(`getChildren!!! ${element}`);
 
     if (element) {
       return Promise.resolve([

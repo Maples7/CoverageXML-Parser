@@ -5,8 +5,13 @@ import { TreeViewDataProvider } from './treeViewDataProvider';
 
 export function activate(context: vscode.ExtensionContext) {
   let disposableItems = [];
-
   const treeViewDataProvider = new TreeViewDataProvider();
+
+  vscode.commands.executeCommand(
+    'setContext',
+    'hasCoverageXMLFiles',
+    (() => treeViewDataProvider.hashasCoverageXMLFiles())()
+  );
   disposableItems.push(
     vscode.window.registerTreeDataProvider(
       'coverageXMLParser',
@@ -15,18 +20,25 @@ export function activate(context: vscode.ExtensionContext) {
   );
   disposableItems.push(
     vscode.commands.registerCommand('coverageXMLParser.addFile', () => {
-      vscode.window.showOpenDialog({
-        canSelectFiles: true,
-        canSelectFolders: false,
-        canSelectMany: false,
-        openLabel: 'Select a CovergaXML file'
-      }).then((filePath) => {
-        console.debug(`Test Command!!! ${filePath}`);
-        if (!_.isArray(filePath) || filePath.length === 0) {
-          return;
-        }
-        treeViewDataProvider.addFile(filePath[0]);
-      });
+      vscode.window
+        .showOpenDialog({
+          canSelectFiles: true,
+          canSelectFolders: false,
+          canSelectMany: false,
+          openLabel: 'Select a CovergaXML file',
+        })
+        .then((filePath) => {
+          console.debug(`Test Command!!! ${filePath}`);
+          if (!_.isArray(filePath) || filePath.length === 0) {
+            return;
+          }
+          treeViewDataProvider.addFile(filePath[0]);
+          vscode.commands.executeCommand(
+            'setContext',
+            'hasCoverageXMLFiles',
+            (() => treeViewDataProvider.hashasCoverageXMLFiles())()
+          );
+        });
     })
   );
 

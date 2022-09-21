@@ -46,7 +46,8 @@
     "viewsWelcome": [
       {
         "view": "coverageXMLParser",
-        "contents": "Add a CoverageXML file to the workspace to view the results.\n[Add CoverageXML File](command:coverageXMLParser.addFile)"
+        "contents": "Add a CoverageXML file to the workspace to view the results.\n[Add CoverageXML File](command:coverageXMLParser.addFile)",
+        "when": "!viewItem && !hasCoverageXMLFiles"
       }
     ]
   },
