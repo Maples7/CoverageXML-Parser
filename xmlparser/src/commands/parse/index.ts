@@ -1,7 +1,7 @@
 import * as fs from 'node:fs'
 import * as readline from 'node:readline'
 import { Command } from '@oclif/core'
-import { Module, NamespaceTable, Class } from './entity'
+import { Module, NamespaceTable, Class, Method } from './entity'
 const XmlReader = require('xml-reader')
 
 export default class parse extends Command {
@@ -115,6 +115,31 @@ export default class parse extends Command {
       clazz.blocksNotCovered = blocksNotCovered
 
       fs.writeFile(`${cachePath}/${clazz.moduleName} ${clazz.namespaceName} ${clazz.name}.json`, JSON.stringify(clazz), () => null)
+
+      // We handle methods in class event because method, on its own, can not extract class name.
+      const methodTags = data.children.filter((tag:any) => tag.name === 'Method')
+      methodTags.forEach((methodTag:any) => {
+
+        const methodName = methodTag.children.find((tag:any) => tag.name === 'MethodName').children[0].value
+        const linesCovered = methodTag.children.find((tag:any) => tag.name === 'LinesCovered').children[0].value
+        const linesPartiallyCovered = methodTag.children.find((tag:any) => tag.name === 'LinesPartiallyCovered').children[0].value
+        const linesNotCovered = methodTag.children.find((tag:any) => tag.name === 'LinesNotCovered').children[0].value
+        const blocksCovered = methodTag.children.find((tag:any) => tag.name === 'BlocksCovered').children[0].value
+        const blocksNotCovered = methodTag.children.find((tag:any) => tag.name === 'BlocksNotCovered').children[0].value
+
+        const method = new Method()
+        method.name = methodName
+        method.className = clazz.name
+        method.namespaceName = clazz.namespaceName
+        method.moduleName = clazz.moduleName
+        method.linesCovered = linesCovered
+        method.linesPartiallyCovered = linesPartiallyCovered
+        method.linesNotCovered = linesNotCovered
+        method.blocksCovered = blocksCovered
+        method.blocksNotCovered = blocksNotCovered
+
+        fs.writeFile(`${cachePath}/${clazz.moduleName} ${clazz.namespaceName} ${clazz.name} ${method.name}.json`, JSON.stringify(method), () => null)
+      });
     });
 
     for await (const line of contentLines) {

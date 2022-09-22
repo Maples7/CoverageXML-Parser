@@ -1,3 +1,5 @@
+const UUID_REGEX: string = '\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}'
+
 export class CoverageUnit {
     name: string = ''
     linesCovered: string = ''
@@ -18,7 +20,7 @@ export class NamespaceTable extends CoverageUnit {
     classes: string[] = []
 
     public static ExtractNameFromKeyName(keyName: string): string {
-        const re: string = '\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}(.*)$'
+        const re: string = `${UUID_REGEX}(.*)$`
         var matches = keyName.match(re)
         if (matches) {
             return matches[1]
@@ -28,7 +30,7 @@ export class NamespaceTable extends CoverageUnit {
     }
 
     public static ExtractModuleNameFromKeyName(keyName: string): string {
-        const re: string = '^(.*)\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}'
+        const re: string = `^(.*)${UUID_REGEX}`
         var matches = keyName.match(re)
         if (matches) {
             return matches[1]
@@ -39,6 +41,12 @@ export class NamespaceTable extends CoverageUnit {
 }
 
 export class Class extends CoverageUnit {
+    namespaceName: string = ''
+    moduleName: string = ''
+}
+
+export class Method extends CoverageUnit {
+    className: string = ''
     namespaceName: string = ''
     moduleName: string = ''
 }
