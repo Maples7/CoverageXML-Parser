@@ -1,7 +1,7 @@
 import * as fs from 'node:fs'
 import * as readline from 'node:readline'
 import { Command } from '@oclif/core'
-import { Module } from './module'
+import { Module } from './entity'
 const XmlReader = require('xml-reader')
 
 export default class parse extends Command {
@@ -10,12 +10,12 @@ export default class parse extends Command {
   static args = [{name: 'xmlpath', description: 'The XML file we are going to parse.', required: true}]
 
   private sourceFiles: Record<string, string> = {}
-  private modules: Module[] = []
 
   async run(): Promise<void> {
 
     const {args} = await this.parse(parse)
-    const path: string = 'C:/Users/ruiyli/Downloads/netfxTest.coveragexml'
+    const xmlPath: string = 'C:/Users/ruiyli/Downloads/netfxTest.coveragexml'
+    const cachePath: string = 'C:/Users/ruiyli/Downloads/cache'
 
     // First reading round, for source file index only.
     this.log('Going to parse source file index...')
@@ -23,7 +23,7 @@ export default class parse extends Command {
     const indexReader = XmlReader.create({stream: true});
 
     const indexLines = readline.createInterface({
-      input: fs.createReadStream(path),
+      input: fs.createReadStream(xmlPath),
       crlfDelay: Infinity
     });
 
@@ -46,7 +46,7 @@ export default class parse extends Command {
     const contentReader = XmlReader.create({stream: true});
 
     const contentLines = readline.createInterface({
-      input: fs.createReadStream(path),
+      input: fs.createReadStream(xmlPath),
       crlfDelay: Infinity
     });
 
@@ -62,7 +62,7 @@ export default class parse extends Command {
       const blocksNotCovered = data.children.find((tag:any) => tag.name === 'BlocksNotCovered').children[0].value
 
       const module = new Module()
-      module.moduleName = moduleName
+      module.name = moduleName
       module.imageSize = imageSize
       module.imageLinkTime = imageLinkTime
       module.linesCovered = linesCovered
@@ -70,13 +70,30 @@ export default class parse extends Command {
       module.linesNotCovered = linesNotCovered
       module.blocksCovered = blocksCovered
       module.blocksNotCovered = blocksNotCovered
-      this.modules.push(module)
+      fs.writeFile(`${cachePath}/${module.name}.json`, JSON.stringify(module), () => null)
+    });
+
+    contentReader.on('tag:NamespaceTable', (data:any) => {
+
+      const namespaceName = data.children.find((tag:any) => tag.name === 'NamespaceName').children[0].value
+      const moduleName = data.children.find((tag:any) => tag.name === 'ModuleName').children[0].value
+      const linesCovered = data.children.find((tag:any) => tag.name === 'LinesCovered').children[0].value
+      const linesPartiallyCovered = data.children.find((tag:any) => tag.name === 'LinesPartiallyCovered').children[0].value
+      const linesNotCovered = data.children.find((tag:any) => tag.name === 'LinesNotCovered').children[0].value
+      const blocksCovered = data.children.find((tag:any) => tag.name === 'BlocksCovered').children[0].value
+      const blocksNotCovered = data.children.find((tag:any) => tag.name === 'BlocksNotCovered').children[0].value
+
+      const namespace = new Module()
+      namespace.name = moduleName
+      namespace.linesCovered = linesCovered
+      namespace.linesPartiallyCovered = linesPartiallyCovered
+      namespace.linesNotCovered = linesNotCovered
+      namespace.blocksCovered = blocksCovered
+      namespace.blocksNotCovered = blocksNotCovered
     });
 
     for await (const line of contentLines) {
       contentReader.parse(line)
     }
-
-    console.log(this.modules)
   }
 }
