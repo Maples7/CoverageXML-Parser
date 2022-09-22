@@ -15,10 +15,30 @@ export class Module extends CoverageUnit {
 
 export class NamespaceTable extends CoverageUnit {
     moduleName: string = ''
-    namespaceKeyName: string = ''
     classes: string[] = []
+
+    public static ExtractNameFromKeyName(keyName: string): string {
+        const re: string = '\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}(.*)$'
+        var matches = keyName.match(re)
+        if (matches) {
+            return matches[1]
+        } else {
+            throw `No namespace name available from [${keyName}].`
+        }
+    }
+
+    public static ExtractModuleNameFromKeyName(keyName: string): string {
+        const re: string = '^(.*)\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}'
+        var matches = keyName.match(re)
+        if (matches) {
+            return matches[1]
+        } else {
+            throw `No module name available from [${keyName}].`
+        }
+    }
 }
 
 export class Class extends CoverageUnit {
-    classKeyName: string = ''
+    namespaceName: string = ''
+    moduleName: string = ''
 }
