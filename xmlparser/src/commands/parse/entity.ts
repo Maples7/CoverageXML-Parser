@@ -49,4 +49,15 @@ export class Method extends CoverageUnit {
     className: string = ''
     namespaceName: string = ''
     moduleName: string = ''
+    linesArray: Lines[] = []
+}
+
+export class Lines {
+    lnStart: string = ''
+    colStart: string = ''
+    lnEnd: string = ''
+    colEnd: string = ''
+    coverage: string = ''
+    sourceFile: string = ''
+    lineID: string = ''
 }

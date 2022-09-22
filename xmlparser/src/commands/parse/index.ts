@@ -1,7 +1,7 @@
 import * as fs from 'node:fs'
 import * as readline from 'node:readline'
 import { Command } from '@oclif/core'
-import { Module, NamespaceTable, Class, Method } from './entity'
+import { Module, NamespaceTable, Class, Method, Lines } from './entity'
 const XmlReader = require('xml-reader')
 
 export default class parse extends Command {
@@ -33,7 +33,7 @@ export default class parse extends Command {
       const sourceFileName = data.children.find((tag:any) => tag.name === 'SourceFileName').children[0].value
 
       console.log(`SourceFileID = ${sourceFileID}, SourceFileName = ${sourceFileName}`)
-      this.sourceFiles[data.SourceFileID] = data.SourceFileName
+      this.sourceFiles[sourceFileID] = sourceFileName
     });
 
     for await (const line of indexLines) {
@@ -137,6 +137,29 @@ export default class parse extends Command {
         method.linesNotCovered = linesNotCovered
         method.blocksCovered = blocksCovered
         method.blocksNotCovered = blocksNotCovered
+
+        const linesTags = methodTag.children.filter((tag:any) => tag.name === 'Lines')
+        linesTags.forEach((linesTag:any) => {
+
+          const lnStart = linesTag.children.find((tag:any) => tag.name === 'LnStart').children[0].value
+          const colStart = linesTag.children.find((tag:any) => tag.name === 'ColStart').children[0].value
+          const lnEnd = linesTag.children.find((tag:any) => tag.name === 'LnEnd').children[0].value
+          const colEnd = linesTag.children.find((tag:any) => tag.name === 'ColEnd').children[0].value
+          const coverage = linesTag.children.find((tag:any) => tag.name === 'Coverage').children[0].value
+          const sourceFileID = linesTag.children.find((tag:any) => tag.name === 'SourceFileID').children[0].value
+          const lineID = linesTag.children.find((tag:any) => tag.name === 'LineID').children[0].value
+
+          const lines = new Lines()
+          lines.lnStart = lnStart
+          lines.colStart = colStart
+          lines.lnEnd = lnEnd
+          lines.colEnd = colEnd
+          lines.coverage = coverage
+          lines.sourceFile = this.sourceFiles[sourceFileID]
+          lines.lineID = lineID
+
+          method.linesArray.push(lines)
+        })
 
         fs.writeFile(`${cachePath}/${clazz.moduleName} ${clazz.namespaceName} ${clazz.name} ${method.name}.json`, JSON.stringify(method), () => null)
       });
