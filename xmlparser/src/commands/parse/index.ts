@@ -1,7 +1,7 @@
 import * as fs from 'node:fs'
 import * as readline from 'node:readline'
 import { Command } from '@oclif/core'
-import { Module } from './entity'
+import { Module, NamespaceTable } from './entity'
 const XmlReader = require('xml-reader')
 
 export default class parse extends Command {
@@ -83,13 +83,15 @@ export default class parse extends Command {
       const blocksCovered = data.children.find((tag:any) => tag.name === 'BlocksCovered').children[0].value
       const blocksNotCovered = data.children.find((tag:any) => tag.name === 'BlocksNotCovered').children[0].value
 
-      const namespace = new Module()
-      namespace.name = moduleName
+      const namespace = new NamespaceTable()
+      namespace.name = namespaceName
+      namespace.moduleName = moduleName
       namespace.linesCovered = linesCovered
       namespace.linesPartiallyCovered = linesPartiallyCovered
       namespace.linesNotCovered = linesNotCovered
       namespace.blocksCovered = blocksCovered
       namespace.blocksNotCovered = blocksNotCovered
+      fs.writeFile(`${cachePath}/${namespace.moduleName} ${namespace.name}.json`, JSON.stringify(namespace), () => null)
     });
 
     for await (const line of contentLines) {
