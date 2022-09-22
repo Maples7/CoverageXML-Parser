@@ -16,7 +16,7 @@
     "url": "https://github.com/Maples7/CoverageXML-Parser"
   },
   "activationEvents": [
-    "onView:coverageXMLParser"
+    "onView:coverageXMLTreeView"
   ],
   "contributes": {
     "commands": [
@@ -24,8 +24,29 @@
         "command": "coverageXMLParser.addFile",
         "title": "Add CoverageXML file",
         "icon": "$(add)"
+      },
+      {
+        "command": "coverageXMLParser.removeFile",
+        "title": "Remove CoverageXML file",
+        "icon": "$(clear-all)"
       }
     ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "coverageXMLParser.addFile",
+          "when": "view == coverageXMLTreeView",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "coverageXMLParser.removeFile",
+          "when": "view == coverageXMLTreeView && viewItem == root",
+          "group": "inline"
+        }
+      ]
+    },
     "viewsContainers": {
       "activitybar": [
         {
@@ -38,14 +59,21 @@
     "views": {
       "coverageXMLParser": [
         {
-          "id": "coverageXMLParser",
-          "name": "CoverageXML Parser"
+          "id": "coverageXMLSearch",
+          "name": "Search",
+          "type": "webview",
+          "visibility": "hidden"
+        },
+        {
+          "id": "coverageXMLTreeView",
+          "name": "Loaded CoverageXML Files",
+          "type": "tree"
         }
       ]
     },
     "viewsWelcome": [
       {
-        "view": "coverageXMLParser",
+        "view": "coverageXMLTreeView",
         "contents": "Add a CoverageXML file to the workspace to view the results.\n[Add CoverageXML File](command:coverageXMLParser.addFile)",
         "when": "!viewItem && !hasCoverageXMLFiles"
       }

@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import * as vscode from 'vscode';
 
-import { TreeViewDataProvider } from './treeViewDataProvider';
+import { Dependency, TreeViewDataProvider } from './treeViewDataProvider';
 
 export function activate(context: vscode.ExtensionContext) {
   let disposableItems = [];
@@ -10,11 +10,11 @@ export function activate(context: vscode.ExtensionContext) {
   vscode.commands.executeCommand(
     'setContext',
     'hasCoverageXMLFiles',
-    (() => treeViewDataProvider.hashasCoverageXMLFiles())()
+    () => treeViewDataProvider.hashasCoverageXMLFiles()
   );
   disposableItems.push(
     vscode.window.registerTreeDataProvider(
-      'coverageXMLParser',
+      'coverageXMLTreeView',
       treeViewDataProvider
     )
   );
@@ -26,6 +26,10 @@ export function activate(context: vscode.ExtensionContext) {
           canSelectFolders: false,
           canSelectMany: false,
           openLabel: 'Select a CovergaXML file',
+          filters: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            'Coverage XML': ['coveragexml'],
+          }
         })
         .then((filePath) => {
           console.debug(`Test Command!!! ${filePath}`);
@@ -33,13 +37,17 @@ export function activate(context: vscode.ExtensionContext) {
             return;
           }
           treeViewDataProvider.addFile(filePath[0]);
-          vscode.commands.executeCommand(
-            'setContext',
-            'hasCoverageXMLFiles',
-            (() => treeViewDataProvider.hashasCoverageXMLFiles())()
-          );
         });
     })
+  );
+  disposableItems.push(
+    vscode.commands.registerCommand(
+      'coverageXMLParser.removeFile',
+      (node: Dependency) => {
+        console.debug(`Remove Command!!! ${node.label} - ${node.filePath}`);
+        treeViewDataProvider.removeFile(node.filePath);
+      }
+    )
   );
 
   context.subscriptions.push(...disposableItems);
