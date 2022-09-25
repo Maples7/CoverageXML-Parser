@@ -5,12 +5,12 @@ import { Dependency, TreeViewDataProvider } from './treeViewDataProvider';
 
 export function activate(context: vscode.ExtensionContext) {
   let disposableItems = [];
-  const treeViewDataProvider = new TreeViewDataProvider();
+  const treeViewDataProvider = new TreeViewDataProvider(context);
 
   vscode.commands.executeCommand(
     'setContext',
     'hasCoverageXMLFiles',
-    () => treeViewDataProvider.hashasCoverageXMLFiles()
+    async () => await treeViewDataProvider.hashasCoverageXMLFiles()
   );
   disposableItems.push(
     vscode.window.registerTreeDataProvider(
@@ -29,23 +29,23 @@ export function activate(context: vscode.ExtensionContext) {
           filters: {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             'Coverage XML': ['coveragexml'],
-          }
+          },
         })
-        .then((filePath) => {
+        .then(async (filePath) => {
           console.debug(`Test Command!!! ${filePath}`);
           if (!_.isArray(filePath) || filePath.length === 0) {
             return;
           }
-          treeViewDataProvider.addFile(filePath[0]);
+          await treeViewDataProvider.addFile(filePath[0]);
         });
     })
   );
   disposableItems.push(
     vscode.commands.registerCommand(
       'coverageXMLParser.removeFile',
-      (node: Dependency) => {
+      (node: Dependency) => async () => {
         console.debug(`Remove Command!!! ${node.label} - ${node.filePath}`);
-        treeViewDataProvider.removeFile(node.filePath);
+        await treeViewDataProvider.removeFile(node.filePath);
       }
     )
   );
