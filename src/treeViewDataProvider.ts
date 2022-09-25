@@ -82,23 +82,15 @@ export class TreeViewDataProvider
     if (element) {
       return Promise.resolve([
         // TODO: return children of element
-        new Dependency(
-          'child1',
-          vscode.TreeItemCollapsibleState.None
-        ),
-        new Dependency(
-          'child2',
-          vscode.TreeItemCollapsibleState.None
-        ),
+        new Dependency('child1', vscode.TreeItemCollapsibleState.None),
+        new Dependency('child2', vscode.TreeItemCollapsibleState.None),
       ]);
     } else {
-      const folders = await this.getLoadedFolders();
-      return folders.map(
-        (name) =>
-          new Dependency(
-            name,
-            vscode.TreeItemCollapsibleState.Collapsed
-          )
+      return this.getLoadedFolders().then((folders) =>
+        folders.map(
+          (name) =>
+            new Dependency(name, vscode.TreeItemCollapsibleState.Collapsed)
+        )
       );
     }
   }
