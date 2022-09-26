@@ -285,8 +285,8 @@ export async function coverageXMLParse(
       JSON.stringify(sourceFiles),
     ]);
 
-    await Promise.map(jsonFiles, ([fileUri, jsonContect]) =>
-      fs.promises.writeFile(fileUri.path, jsonContect)
+    await Promise.map(jsonFiles, ([fileUri, jsonContent]) =>
+      fs.promises.writeFile(fileUri.path, jsonContent)
     );
   });
 
