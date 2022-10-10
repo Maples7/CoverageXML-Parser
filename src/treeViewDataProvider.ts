@@ -60,7 +60,7 @@ export class TreeViewDataProvider
     this.refresh();
   }
 
-  async hashasCoverageXMLFiles(): Promise<boolean> {
+  async hasCoverageXMLFiles(): Promise<boolean> {
     return this.getLoadedFolders().then((folders) => folders.length > 0);
   }
 
@@ -75,7 +75,7 @@ export class TreeViewDataProvider
   async getChildren(element?: Dependency): Promise<Dependency[]> {
     console.debug(`getChildren!!! ${element?.label}`);
 
-    if (!this.hashasCoverageXMLFiles()) {
+    if (!this.hasCoverageXMLFiles()) {
       return Promise.resolve([]);
     }
 
@@ -89,7 +89,7 @@ export class TreeViewDataProvider
       return this.getLoadedFolders().then((folders) =>
         folders.map(
           (name) =>
-            new Dependency(name, vscode.TreeItemCollapsibleState.Collapsed)
+            new Dependency(name, vscode.TreeItemCollapsibleState.Collapsed, 'root')
         )
       );
     }
@@ -98,10 +98,13 @@ export class TreeViewDataProvider
 
 export class Dependency extends vscode.TreeItem {
   constructor(
-    public readonly label: string,
-    public readonly collapsibleState: vscode.TreeItemCollapsibleState
+    public readonly fileName: string,
+    public readonly collapsibleState: vscode.TreeItemCollapsibleState,
+    public readonly contextValue?: string
   ) {
+    const label = path.parse(fileName).name;
     super(label, collapsibleState);
-    this.contextValue = label;
+    this.fileName = fileName;
+    this.contextValue = contextValue;
   }
 }

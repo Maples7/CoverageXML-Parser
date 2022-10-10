@@ -10,7 +10,7 @@ export function activate(context: vscode.ExtensionContext) {
   vscode.commands.executeCommand(
     'setContext',
     'hasCoverageXMLFiles',
-    async () => await treeViewDataProvider.hashasCoverageXMLFiles()
+    async () => await treeViewDataProvider.hasCoverageXMLFiles()
   );
   disposableItems.push(
     vscode.window.registerTreeDataProvider(
@@ -44,8 +44,8 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand(
       'coverageXMLParser.removeFile',
       (node: Dependency) => async () => {
-        console.debug(`Remove Command!!! ${node.label} - ${node.filePath}`);
-        await treeViewDataProvider.removeFile(node.filePath);
+        console.debug(`Remove Command!!! ${node.label} - ${node.fileName}`);
+        await treeViewDataProvider.removeFile(node.fileName);
       }
     )
   );
