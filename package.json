@@ -6,6 +6,7 @@
   "engines": {
     "vscode": "^1.71.0"
   },
+  "publisher": "Maples7",
   "license": "MIT",
   "categories": [
     "Other",
