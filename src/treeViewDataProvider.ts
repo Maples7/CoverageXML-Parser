@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import * as fs from 'fs';
 import * as path from 'path';
 import * as vscode from 'vscode';
 
@@ -24,6 +24,17 @@ export class TreeViewDataProvider
 
   private async getLoadedFolders(): Promise<string[]> {
     const globalStorage = this.context.globalStorageUri;
+    console.debug(`globalStorage: ${globalStorage.path}`);
+    console.debug(`globalStorage exist?: ${fs.existsSync(globalStorage.path)}`);
+    if (!fs.existsSync(globalStorage.path)) {
+      try {
+        await vscode.workspace.fs.createDirectory(globalStorage);
+      } catch (error) {
+        vscode.window.showErrorMessage(
+          `Can't create the global storage directory in [${globalStorage.path}]: ${error}`
+        );
+      }
+    }
     return vscode.workspace.fs
       .readDirectory(globalStorage)
       .then((items) => items.map(([name, _]) => name));
@@ -89,7 +100,11 @@ export class TreeViewDataProvider
       return this.getLoadedFolders().then((folders) =>
         folders.map(
           (name) =>
-            new Dependency(name, vscode.TreeItemCollapsibleState.Collapsed, 'root')
+            new Dependency(
+              name,
+              vscode.TreeItemCollapsibleState.Collapsed,
+              'root'
+            )
         )
       );
     }
