@@ -43,7 +43,7 @@ export function activate(context: vscode.ExtensionContext) {
   disposableItems.push(
     vscode.commands.registerCommand(
       'coverageXMLParser.removeFile',
-      (node: Dependency) => async () => {
+      async (node: Dependency) => {
         console.debug(`Remove Command!!! ${node.label} - ${node.fileName}`);
         await treeViewDataProvider.removeFile(node.fileName);
       }
